@@ -2,11 +2,11 @@
 
 Source: official [SAP-C02 In-Scope AWS Services](https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/sap-02-in-scope-services.html) list (non-exhaustive, subject to change). Checked 13 Oct 2026.
 
-Legend: ⭐ = your weak area (analytics, security, IAM), study deeper. ⚠️ = still on the exam list, but AWS has closed it to new customers (Maintenance), set an end date (Sunset), or shut it down. Status checked against the [AWS Lifecycle Changes](https://docs.aws.amazon.com/general/latest/gr/service-lifecycle.html) pages on 13 Oct 2026. Know what these services do, but expect the exam to favour their replacements.
+Legend: ⭐ = heavily tested. The official [exam guide](https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html) does not weight individual services, so ⭐ marks themes its task statements repeat across domains: security and IAM, networking, governance, cost, reliability and DR, databases, and migration (Domain 4, 20%). Study these deeper. ⚠️ = still on the exam list, but AWS has closed it to new customers (Maintenance), set an end date (Sunset), or shut it down. Status checked against the [AWS Lifecycle Changes](https://docs.aws.amazon.com/general/latest/gr/service-lifecycle.html) pages on 13 Oct 2026. Know what these services do, but expect the exam to favour their replacements.
 
 ---
 
-## Analytics ⭐
+## Analytics
 
 | Service | One-liner |
 |---|---|
@@ -46,7 +46,7 @@ Legend: ⭐ = your weak area (analytics, security, IAM), study deeper. ⚠️ = 
 |---|---|
 | Amazon SES | Scalable transactional and marketing email sending and receiving. |
 
-## Cloud Financial Management
+## Cloud Financial Management ⭐
 
 | Service | One-liner |
 |---|---|
@@ -82,7 +82,7 @@ Legend: ⭐ = your weak area (analytics, security, IAM), study deeper. ⚠️ = 
 | Amazon EKS Anywhere | Run and manage Kubernetes clusters on your own infrastructure using EKS tooling. |
 | Amazon EKS Distro | The open-source Kubernetes distribution EKS uses, self-managed anywhere. |
 
-## Database
+## Database ⭐
 
 | Service | One-liner |
 |---|---|
@@ -185,7 +185,7 @@ Legend: ⭐ = your weak area (analytics, security, IAM), study deeper. ⚠️ = 
 | AWS Trusted Advisor | Best-practice checks across cost, security, fault tolerance, performance, and quotas. |
 | AWS Well-Architected Tool | Review workloads against the six Well-Architected pillars and track improvement plans. |
 
-## Migration and Transfer
+## Migration and Transfer ⭐
 
 | Service | One-liner |
 |---|---|
@@ -198,7 +198,7 @@ Legend: ⭐ = your weak area (analytics, security, IAM), study deeper. ⚠️ = 
 | AWS Snow Family ⚠️ | Physical devices for offline bulk transfer and edge compute; Snowball Edge is existing customers only, Snowcone and Snowmobile are gone (see Part 4). |
 | AWS Transfer Family | Managed SFTP, FTPS, FTP, and AS2 endpoints backed by S3 or EFS. |
 
-## Networking and Content Delivery
+## Networking and Content Delivery ⭐
 
 | Service | One-liner |
 |---|---|
@@ -257,7 +257,7 @@ Legend: ⭐ = your weak area (analytics, security, IAM), study deeper. ⚠️ = 
 
 These are the pairs and triples the exam deliberately puts side by side as distractors.
 
-### Cognito User Pool vs Identity Pool ⭐
+### Cognito User Pool vs Identity Pool
 | | User Pool | Identity Pool |
 |---|---|---|
 | Answers | "Who are you?" (authentication) | "What AWS resources can you touch?" (authorization) |
@@ -284,7 +284,7 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Cross-Region replication | Yes | No |
 | Pick when | "Rotate DB credentials automatically" | "Store config values cheaply" |
 
-### Kinesis Data Streams vs Data Firehose vs SQS vs MSK ⭐
+### Kinesis Data Streams vs Data Firehose vs SQS vs MSK
 | | Kinesis Data Streams | Data Firehose | SQS | MSK |
 |---|---|---|---|---|
 | Latency | Real time (~200 ms) | Near real time (buffered) | Real time | Real time |
@@ -300,7 +300,7 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Filtering | Message attribute filter | None | Rich content-based patterns |
 | Pick when | High-throughput fan-out | Buffering and retries | SaaS or AWS service events, cross-account routing, schedules |
 
-### VPC Peering vs Transit Gateway vs PrivateLink vs Cloud WAN
+### VPC Peering vs Transit Gateway vs PrivateLink vs Cloud WAN ⭐
 | | VPC Peering | Transit Gateway | PrivateLink | Cloud WAN |
 |---|---|---|---|---|
 | Topology | 1:1, non-transitive | Hub and spoke, transitive | Service consumer to provider | Global managed WAN |
@@ -308,7 +308,7 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Cost | No hourly fee, cheapest data path | Hourly per attachment plus per GB | Per endpoint hour plus per GB | Highest |
 | Exam cue | "Few VPCs, lowest cost" | "Hundreds of VPCs plus on-prem" | "Expose one service to many accounts / overlapping IPs" | "Multi-Region global network with central policy" |
 
-### Gateway Endpoint vs Interface Endpoint
+### Gateway Endpoint vs Interface Endpoint ⭐
 | | Gateway Endpoint | Interface Endpoint |
 |---|---|---|
 | Services | S3 and DynamoDB only | Most AWS services and PrivateLink services |
@@ -316,7 +316,7 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Cost | Free | Hourly plus per GB |
 | Reachable from on-prem | No | Yes (via DX or VPN) |
 
-### Site-to-Site VPN vs Direct Connect
+### Site-to-Site VPN vs Direct Connect ⭐
 | | Site-to-Site VPN | Direct Connect |
 |---|---|---|
 | Path | Encrypted IPsec over internet | Private dedicated fibre |
@@ -331,7 +331,7 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Layer | 7 (HTTP/HTTPS/gRPC) | 4 (TCP/UDP/TLS) | 3 (GENEVE) |
 | Key feature | Path, host, header routing, OIDC auth, WAF | Static or Elastic IP, millions of rps, ultra-low latency, PrivateLink provider | Inserts third-party firewalls and IDS transparently |
 
-### CloudFront vs Global Accelerator
+### CloudFront vs Global Accelerator ⭐
 | | CloudFront | Global Accelerator |
 |---|---|---|
 | Caches content | Yes | No |
@@ -339,19 +339,19 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Entry point | DNS name | 2 static anycast IPs |
 | Exam cue | "Static and dynamic web content, edge caching" | "Gaming, VoIP, IoT; static IP; fast Regional failover" |
 
-### DataSync vs Storage Gateway vs Transfer Family vs Snowball
+### DataSync vs Storage Gateway vs Transfer Family vs Snowball ⭐
 | | DataSync | Storage Gateway | Transfer Family | Snowball Edge |
 |---|---|---|---|---|
 | Purpose | One-time or scheduled bulk copy | Ongoing hybrid access with local cache | SFTP/FTPS/AS2 endpoint for partners | Offline transfer when network is too slow |
 | Exam cue | "Migrate NFS/SMB/HDFS to S3/EFS/FSx" | "On-prem apps keep using file, volume, or tape interface" | "Partners upload via SFTP, no server changes for them" | "Limited bandwidth, hundreds of TB" (existing customers only, see numbers) |
 
-### MGN vs DMS vs SCT vs Elastic Disaster Recovery
+### MGN vs DMS vs SCT vs Elastic Disaster Recovery ⭐
 | | MGN | DMS | SCT | DRS |
 |---|---|---|---|---|
 | Moves | Whole servers (rehost) | Database data, with CDC | Schema and stored procedures | Servers for DR, not migration |
 | Exam cue | "Lift and shift 500 VMs, minimal downtime" | "Migrate DB with minimal downtime" | "Oracle to Aurora PostgreSQL (heterogeneous)" | "Low RPO/RTO DR for on-prem servers" |
 
-### DR Strategies
+### DR Strategies ⭐
 | Strategy | RPO/RTO | Cost | What runs in DR Region |
 |---|---|---|---|
 | Backup and restore | Hours | $ | Only backups |
@@ -359,7 +359,7 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Warm standby | Minutes | $$$ | Scaled-down full stack running |
 | Multi-site active/active | Near zero | $$$$ | Full production in both |
 
-### Aurora Global Database vs RDS Cross-Region Read Replica vs DynamoDB Global Tables
+### Aurora Global Database vs RDS Cross-Region Read Replica vs DynamoDB Global Tables ⭐
 | | Aurora Global DB | RDS Cross-Region Replica | DynamoDB Global Tables |
 |---|---|---|---|
 | Replication | Storage-level, typically under 1 s lag, up to 10 secondary Regions | Async engine-level | Multi-active, all Regions writable |
@@ -383,17 +383,17 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Config | Resource configuration | Compliance |
 | CloudTrail | API calls | Audit |
 
-### Shield Standard vs Shield Advanced
+### Shield Standard vs Shield Advanced ⭐
 | | Standard | Advanced |
 |---|---|---|
 | Cost | Free, automatic | Monthly subscription per org |
 | Layers | 3 and 4 | 3, 4, and 7 (with WAF) |
 | Extras | None | Shield Response Team, DDoS cost protection, health-based detection |
 
-### Organizations vs Control Tower
+### Organizations vs Control Tower ⭐
 Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control Tower is the opinionated landing zone built on top (Account Factory, log archive and audit accounts, preventive and detective controls). Exam cue: "set up a governed multi-account environment quickly with best practices" means Control Tower.
 
-### Savings Plans vs Reserved Instances vs Spot
+### Savings Plans vs Reserved Instances vs Spot ⭐
 | | Compute SP | EC2 Instance SP | Standard RI | Convertible RI | Spot |
 |---|---|---|---|---|---|
 | Flexibility | Any family, Region, OS, Fargate, Lambda | Any size and OS within one family and Region | Fixed attributes | Can exchange | Can be interrupted |
@@ -404,7 +404,7 @@ Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control
 
 # Part 3: Keyword Cheatsheet (Scenario Phrase to Answer)
 
-### Hybrid connectivity
+### Hybrid connectivity ⭐
 | If the scenario says | Think |
 |---|---|
 | Connect on-prem quickly, encrypted, low cost | Site-to-Site VPN |
@@ -433,7 +433,7 @@ Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control
 | Chargeback per team | Cost allocation tags, CUR plus Athena, AWS Budgets |
 | Users only launch approved products | Service Catalog |
 
-### Data and analytics ⭐
+### Data and analytics
 | If the scenario says | Think |
 |---|---|
 | Query data in S3 with SQL, no infrastructure | Athena (plus Glue Data Catalog) |
@@ -446,7 +446,7 @@ Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control
 | Log search and dashboards | OpenSearch Service |
 | BI dashboards for business users | QuickSight |
 
-### Migration
+### Migration ⭐
 | If the scenario says | Think |
 |---|---|
 | Discover servers and dependencies first | Application Discovery Service (classic exam answer; closed to new customers since Oct 2025, AWS now points to AWS Transform) |
@@ -458,7 +458,7 @@ Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control
 | Retire mainframe or legacy batch | Modernize to containers or serverless (Batch, Step Functions) |
 | VMware workloads with no change | VMware Cloud on AWS, or MGN |
 
-### Resilience and performance
+### Resilience and performance ⭐
 | If the scenario says | Think |
 |---|---|
 | Static IPs for global users, fast failover | Global Accelerator |
@@ -487,7 +487,7 @@ Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control
 | Auto-remediate non-compliant resources | Config rule plus SSM Automation remediation |
 | Immutable backups, ransomware protection | AWS Backup Vault Lock, S3 Object Lock (compliance mode) |
 
-### Cost
+### Cost ⭐
 | If the scenario says | Think |
 |---|---|
 | Rightsize EC2, Lambda, EBS | Compute Optimizer |
@@ -504,7 +504,7 @@ Organizations is the engine (accounts, OUs, SCPs, consolidated billing). Control
 
 Verified 13 Oct 2026 against AWS documentation. Rows marked ✅ were checked against AWS documentation or AWS announcements; the few unmarked values are stable, long-standing figures. Exam questions may lag behind recent limit increases, so know both old and new values where shown.
 
-### Snow Family (status changed: read this first) ✅
+### Snow Family (status changed: read this first) ⭐ ✅
 | Device | Status | Key specs |
 |---|---|---|
 | Snowcone (8 TB HDD / 14 TB SSD) | Discontinued Nov 2024, support ended Nov 2025 | Older exam questions may still mention it |
@@ -516,7 +516,7 @@ Verified 13 Oct 2026 against AWS documentation. Rows marked ✅ were checked aga
 
 Rule of thumb for "network vs device": 1 Gbps moves roughly 10 TB per day at full utilization, so 100 TB takes about 10 days on a saturated 1 Gbps link.
 
-### Networking ✅
+### Networking ⭐ ✅
 | Item | Number |
 |---|---|
 | Site-to-Site VPN per tunnel | Up to 1.25 Gbps, 2 tunnels per connection |
@@ -568,7 +568,7 @@ Rule of thumb for "network vs device": 1 Gbps moves roughly 10 TB per day at ful
 | EBS io2 Block Express ✅ | Up to 256,000 IOPS, 4,000 MB/s, 64 TiB; Multi-Attach to up to 16 Nitro instances |
 | EBS gp3 ✅ | 3,000 IOPS and 125 MiB/s baseline at any size; now up to 80,000 IOPS and 2,000 MB/s (older material says 16,000 and 1,000) |
 
-### Database
+### Database ⭐
 | Item | Number |
 |---|---|
 | Aurora ✅ | 6 copies across 3 AZs, up to 15 replicas |
@@ -593,6 +593,7 @@ Rule of thumb for "network vs device": 1 Gbps moves roughly 10 TB per day at ful
 ---
 
 ## Sources
+- [SAP-C02 exam guide (domains and task statements)](https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html)
 - [SAP-C02 In-Scope AWS Services](https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/sap-02-in-scope-services.html)
 - [AWS Snowball Edge availability change](https://docs.aws.amazon.com/snowball/latest/developer-guide/snowball-edge-availability-change.html) and [device specifications](https://docs.aws.amazon.com/snowball/latest/developer-guide/device-differences.html)
 - [AWS Snow device updates (Storage Blog)](https://aws.amazon.com/blogs/storage/aws-snow-device-updates)
