@@ -372,6 +372,31 @@ Evaluation order: explicit Deny anywhere wins, then every applicable limiter (SC
 | Protocol | Block | NFS | SMB, AD integrated | Lustre (HPC) | NFS, SMB, iSCSI |
 | Shared | Single instance (Multi-Attach io1/io2 only) | Thousands of Linux clients | Windows clients | HPC clusters, S3-linked | Multi-protocol, NetApp features |
 
+### C vs M vs R vs T Instances
+| | C (compute optimized) | M (general purpose) | R (memory optimized) | T (burstable) |
+|---|---|---|---|---|
+| Memory per vCPU | 2 GiB (c7i.xlarge: 4 vCPU, 8 GiB) | 4 GiB | 8 GiB (r7i.xlarge: 4 vCPU, 32 GiB) | Small sizes from 0.5 GiB |
+| CPU model | Sustained high CPU | Balanced, sustained | Sustained, memory-bound | Baseline plus burst on CPU credits |
+| Use for | Batch, media transcoding, game servers, HPC, CPU-bound web tiers | Web and app servers, mixed workloads, small to medium DBs | In-memory DBs and caches, large relational DBs, real-time analytics | Dev/test, low-traffic web, microservices that idle most of the day |
+| Watch out | Low memory per vCPU | None, default choice | Higher cost per vCPU | T3/T3a/T4g/T8i launch in unlimited mode by default: sustained CPU above baseline is charged as surplus credits, so use M or C instead |
+| Exam cue | "CPU-bound, compute-intensive" | "Balanced, no clear bottleneck" | "Large dataset in memory, out of memory errors" | "Low average CPU with occasional spikes, lowest cost" |
+
+Need even more memory per vCPU (16 to 32 GiB, e.g. SAP HANA)? Use X or U (high memory). Name suffixes: g = Graviton, a = AMD, i = Intel, d = instance store, n = network optimized.
+
+### Redis OSS (or Valkey) vs Memcached ⭐
+| | Redis OSS / Valkey | Memcached |
+|---|---|---|
+| Data types | Strings, hashes, lists, sets, sorted sets, bitmaps, HyperLogLog, geospatial | Simple strings and objects |
+| Multithreaded | No | Yes, uses many cores per node |
+| Replication and failover | Yes, replicas with Multi-AZ automatic failover | No, losing a node loses its data |
+| Backup and restore | Yes (snapshots) | Serverless caches only, not node-based clusters |
+| Pub/Sub, sorted sets, geospatial | Yes | No |
+| Multi-Region | Global Datastore | No |
+| Scaling | Cluster mode enabled for sharding and online resharding | Add or remove nodes, client-side partitioning |
+| Pick when | Leaderboards (sorted sets), session store that must survive failure, pub/sub, HA cache | Simplest cache, large multithreaded nodes, scale out and in freely, loss of cached data is acceptable |
+
+Valkey is the Redis OSS-compatible engine getting new features: vector search from 8.2, full-text search and Multi-AZ durability from 9.0.
+
 ### Security Detection Services ⭐
 | Service | Looks at | One-word job |
 |---|---|---|
@@ -592,6 +617,57 @@ Rule of thumb for "network vs device": 1 Gbps moves roughly 10 TB per day at ful
 
 ---
 
+# Part 5: Lists to Memorize
+
+Lists the exam expects you to know in full. Checked 14 Oct 2026 against AWS documentation.
+
+### Databases ⭐
+| List | Members | Exam cue |
+|---|---|---|
+| RDS engines | Db2, MariaDB, MySQL, Oracle, PostgreSQL, SQL Server (plus Aurora) | Engine not listed (e.g. Sybase, Informix)? Then EC2 self-managed, or migrate with DMS/SCT |
+| RDS Custom engines | Oracle and SQL Server only | "Need OS or DB admin access on a managed DB" |
+| Aurora compatibility | MySQL and PostgreSQL only | "Oracle to Aurora" means heterogeneous: SCT plus DMS |
+| Aurora variants | Provisioned, Serverless v2, Global Database, PostgreSQL Limitless (sharding), Aurora DSQL (serverless, distributed, PostgreSQL-compatible, active-active multi-Region) | "Multi-Region active-active relational with strong consistency" points to DSQL |
+| ElastiCache engines | Valkey, Redis OSS, Memcached | Replication, persistence, pub/sub: Valkey/Redis OSS. Simple multithreaded cache: Memcached |
+| Graph | Neptune | Social graphs, fraud rings, recommendations |
+| Document | DocumentDB | MongoDB-compatible JSON documents |
+| Wide-column | Keyspaces | Cassandra-compatible, serverless |
+| Time series | Timestream for InfluxDB | Timestream for LiveAnalytics is closed to new customers (June 2025) |
+| Durable in-memory primary DB | MemoryDB | Microsecond reads, Multi-AZ durable; not just a cache |
+| Ledger | QLDB ⚠️ | End of support 31 Jul 2025; AWS points to Aurora PostgreSQL |
+
+### Storage
+| List | Members | Exam cue |
+|---|---|---|
+| S3 storage classes | Standard, Express One Zone, Intelligent-Tiering, Standard-IA, One Zone-IA, Glacier Instant Retrieval, Glacier Flexible Retrieval, Glacier Deep Archive, Outposts | Express One Zone: single-digit ms, one AZ, directory buckets |
+| EBS volume types | gp3, gp2 (SSD); io2 Block Express, io1 (provisioned IOPS SSD); st1, sc1 (HDD); Magnetic (previous generation) | st1/sc1 cannot be boot volumes; Multi-Attach is io1/io2 only |
+| FSx types | Windows File Server, Lustre, NetApp ONTAP, OpenZFS | SMB plus AD: Windows. HPC plus S3: Lustre. Multi-protocol: ONTAP. Linux NFS migration: OpenZFS |
+| Storage Gateway types | S3 File, FSx File ⚠️, Volume (cached or stored), Tape | FSx File Gateway is closed to new customers. Cached: primary data in S3. Stored: primary data on-prem |
+
+### Networking ⭐
+| List | Members | Exam cue |
+|---|---|---|
+| Gateway endpoints | S3 and DynamoDB only | Everything else needs an interface endpoint |
+| Route 53 routing policies | Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, Multivalue answer, IP-based | Geolocation: by user location (compliance). Geoproximity: by resource location with bias. IP-based: by client CIDR |
+| Direct Connect VIFs | Private (one VPC via VGW), Public (AWS public endpoints), Transit (TGW via DX Gateway) | "Many VPCs over one DX" means transit VIF |
+| Load balancers | ALB, NLB, GWLB; Classic is previous generation | Classic in an answer is usually the wrong choice |
+
+### Compute and deployment
+| List | Members | Exam cue |
+|---|---|---|
+| EC2 placement groups | Cluster, Partition (up to 7 per AZ), Spread (up to 7 instances per AZ), Precision time (new) | Cluster: low latency HPC. Partition: HDFS, Cassandra, Kafka. Spread: few critical instances |
+| CodeDeploy on EC2 | In-place or blue/green; AllAtOnce, HalfAtATime, OneAtATime (default) | Blue/green on EC2 replaces instances behind a load balancer |
+| CodeDeploy on Lambda | Canary (10% then the rest), Linear (10% every N minutes), AllAtOnce | "Shift traffic gradually, roll back on alarm" |
+| ECS blue/green | CodeDeploy (canary, linear, all-at-once), or now native ECS blue/green with linear and canary | Rolling update is still the ECS default |
+
+### Migration ⭐
+| List | Members | Exam cue |
+|---|---|---|
+| 7 Rs | Retire, Retain, Rehost, Relocate, Repurchase, Replatform, Refactor | Rehost: lift and shift (MGN). Relocate: VMware Cloud on AWS. Repurchase: move to SaaS. Replatform: e.g. to RDS |
+| AWS Backup coverage | EC2, EBS, S3, RDS, Aurora, DynamoDB, EFS, FSx, Storage Gateway, DocumentDB, Neptune, Redshift, Timestream, EKS, SAP HANA on EC2, VMware VMs | "Central backup policy across accounts" means AWS Backup with Organizations |
+
+---
+
 ## Sources
 - [SAP-C02 exam guide (domains and task statements)](https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/solutions-architect-professional-02.html)
 - [SAP-C02 In-Scope AWS Services](https://docs.aws.amazon.com/aws-certification/latest/solutions-architect-professional-02/sap-02-in-scope-services.html)
@@ -605,6 +681,11 @@ Rule of thumb for "network vs device": 1 Gbps moves roughly 10 TB per day at ful
 - [Aurora Global Database: 10 secondary Regions](https://aws.amazon.com/about-aws/whats-new/2025/05/amazon-aurora-global-database-support-10-secondary-region-clusters/)
 - [Direct Connect features](https://aws.amazon.com/directconnect/features/)
 - [S3 maximum object size 50 TB](https://aws.amazon.com/about-aws/whats-new/2025/12/amazon-s3-maximum-object-size-50-tb/)
+- [RDS engines](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Welcome.html), [Aurora DSQL](https://docs.aws.amazon.com/aurora-dsql/latest/userguide/what-is-aurora-dsql.html), [database decision guide](https://docs.aws.amazon.com/decision-guides/latest/databases-on-aws-how-to-choose/databases-on-aws-how-to-choose.html), [Timestream LiveAnalytics availability](https://docs.aws.amazon.com/timestream/latest/developerguide/AmazonTimestreamForLiveAnalytics-availability-change.html)
+- [S3 storage classes](https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html), [EBS volume types](https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volume-types.html), [FSx File Gateway](https://docs.aws.amazon.com/filegateway/latest/filefsxw/what-is-file-fsxw.html)
+- [Gateway endpoints](https://docs.aws.amazon.com/vpc/latest/privatelink/gateway-endpoints.html), [Route 53 routing policies](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy.html), [DX virtual interfaces](https://docs.aws.amazon.com/directconnect/latest/UserGuide/WorkingWithVirtualInterfaces.html)
+- [EC2 instance type naming](https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-type-names.html), [burstable instances](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-performance-instances-unlimited-mode.html), [ElastiCache engine comparison](https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html)
+- [Placement groups](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/placement-strategies.html), [CodeDeploy deployment configurations](https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html), [7 Rs](https://docs.aws.amazon.com/prescriptive-guidance/latest/large-migration-guide/migration-strategies.html), [AWS Backup feature availability](https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html)
 - [AWS Organizations quotas](https://docs.aws.amazon.com/general/latest/gr/ao.html) and [higher SCP quotas (May 2026)](https://aws.amazon.com/de/about-aws/whats-new/2026/05/aws-organizations-increased-scp-quotas/)
 - [SQS message quotas](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/quotas-messages.html), [Kinesis quotas](https://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html), [EBS volume types](https://aws.amazon.com/ebs/volume-types/), [VPC quotas](https://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_Appendix_Limits.html)
 
